@@ -82,14 +82,12 @@ void AddRoundKey(unsigned char State[], unsigned char Round_Key[])
 
 void SubBytes(unsigned char State[])
 {
-    unsigned char I;
-    unsigned char J;
 	for (int i=0; i<4; i++)
         {
         	for(int j=0; j<4;j++)
         	{
-        		I = State[i*4+j]>>4;
-        		J = State[i*4+j]<<4;
+        		unsigned char I = State[i*4+j]>>4;
+        		unsigned char J = State[i*4+j]<<4;
         		J=J>>4;
         		State[i*4+j] = Sbox[I*16+J];
         	}
@@ -97,14 +95,12 @@ void SubBytes(unsigned char State[])
 }
 void InvSubBytes(unsigned char State[])
 {
-    unsigned char I;
-    unsigned char J
 	for (int i=0; i<4; i++)
         {
         	for(int j=0; j<4;j++)
         	{
-        		I = State[i*4+j]>>4;
-        		J = State[i*4+j]<<4;
+        		unsigned char I = State[i*4+j]>>4;
+        		unsigned char J = State[i*4+j]<<4;
         		J=J>>4;
         		State[i*4+j] = InvSbox[I*16+J];
         	}
@@ -157,13 +153,10 @@ void KeyExpansion(unsigned char KeyShedule[11][16], unsigned char Cipher_Key[])
 		KeyShedule[count][4]=KeyShedule[count-1][11];
 		KeyShedule[count][8]=KeyShedule[count-1][15];
 		KeyShedule[count][12]=KeyShedule[count-1][3];
-        
-        unsigned char I;
-        unsigned char J;
 		for(int i=0; i<4; i++)
 		{
-			I = KeyShedule[count][4*i]>>4;
-			J = KeyShedule[count][4*i]<<4;
+			unsigned char I = KeyShedule[count][4*i]>>4;
+			unsigned char J = KeyShedule[count][4*i]<<4;
 			J=J>>4;
 			KeyShedule[count][4*i] = Sbox[I*16+J];
 		}
@@ -192,7 +185,8 @@ void KeyExpansion(unsigned char KeyShedule[11][16], unsigned char Cipher_Key[])
 	       	//CheckState(KeyShedule[count]);
 	}
 }
-
+#define xtime(x)   ((x<<1) ^ (((x>>7) & 1) * 0x1b))
+#define Multiply(x,y) (((y & 1) * x) ^ ((y>>1 & 1) * xtime(x)) ^ ((y>>2 & 1) * xtime(xtime(x))) ^ ((y>>3 & 1) * xtime(xtime(xtime(x)))) ^ ((y>>4 & 1) * xtime(xtime(xtime(xtime(x))))))
 // MixColumns function mixes the columns of the state matrix
 void MixColumns(unsigned char State[])
 {
@@ -404,7 +398,7 @@ int main(int argc, char *argv[])
 	{
     
 	};
-    cout <<"If you want to create the key manually, enter M\nIf you want to generate a key automatically, enter A\nIf you already have a file with the key, enter F\n";
+    cout <<"If you want to input the key manually, enter M\nIf you want to generate a key automatically, enter A\nIf you already have a file with the key, enter F\n";
     cin >> choise;
     if(choise=='A')
     {
@@ -425,8 +419,15 @@ int main(int argc, char *argv[])
     }
     else if (choise=='M')
     {
+        FILE * key = fopen("password.txt","w");
+        if (key == NULL) {
+            perror ("Error opening password.txt");
+            return -1;
+        }
         cout <<"Enter the key\n";
         cin >> InputKey;
+        fwrite(InputKey,1,16,key);
+        fclose(key);
     }
     else if (choise=='F')
     {
