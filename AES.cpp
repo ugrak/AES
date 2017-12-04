@@ -82,12 +82,14 @@ void AddRoundKey(unsigned char State[], unsigned char Round_Key[])
 
 void SubBytes(unsigned char State[])
 {
+    unsigned char I;
+    unsigned char J;
 	for (int i=0; i<4; i++)
         {
         	for(int j=0; j<4;j++)
         	{
-        		unsigned char I = State[i*4+j]>>4;
-        		unsigned char J = State[i*4+j]<<4;
+        		I = State[i*4+j]>>4;
+        		J = State[i*4+j]<<4;
         		J=J>>4;
         		State[i*4+j] = Sbox[I*16+J];
         	}
@@ -95,12 +97,14 @@ void SubBytes(unsigned char State[])
 }
 void InvSubBytes(unsigned char State[])
 {
+    unsigned char I;
+    unsigned char J;
 	for (int i=0; i<4; i++)
         {
         	for(int j=0; j<4;j++)
         	{
-        		unsigned char I = State[i*4+j]>>4;
-        		unsigned char J = State[i*4+j]<<4;
+        		I = State[i*4+j]>>4;
+        		J = State[i*4+j]<<4;
         		J=J>>4;
         		State[i*4+j] = InvSbox[I*16+J];
         	}
@@ -153,10 +157,12 @@ void KeyExpansion(unsigned char KeyShedule[11][16], unsigned char Cipher_Key[])
 		KeyShedule[count][4]=KeyShedule[count-1][11];
 		KeyShedule[count][8]=KeyShedule[count-1][15];
 		KeyShedule[count][12]=KeyShedule[count-1][3];
+        unsigned char I;
+        unsigned char J;
 		for(int i=0; i<4; i++)
 		{
-			unsigned char I = KeyShedule[count][4*i]>>4;
-			unsigned char J = KeyShedule[count][4*i]<<4;
+			I = KeyShedule[count][4*i]>>4;
+			J = KeyShedule[count][4*i]<<4;
 			J=J>>4;
 			KeyShedule[count][4*i] = Sbox[I*16+J];
 		}
